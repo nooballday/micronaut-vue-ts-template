@@ -1,0 +1,24 @@
+micronaut:
+  application:
+    name: server
+  server:
+    netty:
+      access-logger:
+        enabled: true
+        logger-name: access-logger
+        log-format: common
+        exclusions:
+          - /health
+    cors:
+      enabled: true
+      configurations:
+        ui:
+          allowed-origins:
+            - http://127.0.0.1:3001
+            - http://localhost:3001
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: "/**"
+        paths: "classpath:public"

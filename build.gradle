@@ -1,0 +1,32 @@
+task copyClientResources(dependsOn: ":client:build", type: Copy) {
+    group = 'build'
+    description = 'Copy client resources into server'
+    from "${project(':client').projectDir}/dist"
+    into "${project(':server').buildDir}/resources/main/public"
+}
+
+task assembleServerAndClient(type: Copy, dependsOn: ['copyClientResources', ':server:shadowJar']) {
+    group = 'build'
+    description = 'Build combined server & client JAR'
+    from fileTree(dir: "${project(':server').buildDir}/libs/")
+    into "${rootProject.buildDir}"
+    doLast {
+        logger.quiet "JAR generated at ${rootProject.buildDir}. It combines the Server and client projects."
+    }
+}
+
+task build(dependsOn: ['yarn_install', 'assembleServerAndClient']) {
+    group = 'build'
+    doLast {
+        logger.info "finished"
+    }
+}
+
+task runApp(dependsOn: ['server:run', 'client:serve']) {
+    group = 'build'
+    doLast {
+        logger.info("Finished starting client & server")
+    }
+}
+
+project(":server").getTasksByName('shadowJar', true)[0].mustRunAfter(copyClientResources)

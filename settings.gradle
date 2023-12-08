@@ -1,0 +1,3 @@
+rootProject.name="micronaut-vue-template"
+include 'client'
+include 'server'
